@@ -4,9 +4,112 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Coordinated Loop</title>
-<meta http-equiv="refresh" content="0;url=https://coordinated-loop-atilas-projects-4582b658.vercel.app">
+<meta name="description" content="Peircean Human–AI figures: LLM, ACT-R, Human, Environment.">
+<style>
+:root{--paper:#f3eee4;--paper-2:#ebe4d4;--ink:#1a1713;--ink-soft:#4a453c;--muted:#756e63;--rule:#c4baa8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Sans 3",Segoe UI,Helvetica,Arial,sans-serif}
+h1,.lede,.caption,.status,aside p{font-family:Newsreader,Georgia,serif}
+.wrap{max-width:1320px;margin:0 auto;padding:0 24px 64px}
+header{padding:36px 0 20px;border-bottom:1px solid var(--rule)}
+.kicker{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+h1{font-size:34px;font-weight:500;margin:0}
+.lede{font-style:italic;color:var(--ink-soft);margin:10px 0 0;font-size:18px}
+.chrome{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);padding:12px 0}
+.row,nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+nav{margin-bottom:8px}
+.tab,.btn{min-height:44px;border-radius:6px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:8px 14px;font:500 14px inherit;cursor:pointer}
+.tab:hover,.btn:hover,.tab[aria-selected="true"],.btn.solid{background:var(--ink);color:var(--paper)}
+.tab small{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.status{color:var(--ink-soft);font-size:14px;font-style:italic;margin:8px 0 0}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:36px;padding-top:28px}
+.plate{border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.plate svg{display:block;width:100%;height:auto}
+.caption{font-size:18px;line-height:1.55;margin:22px 0 0}
+dt{font-weight:650;margin-top:14px}
+dd{margin:4px 0 0;color:var(--ink-soft);font-size:15.5px;line-height:1.55}
+.panel{display:none}.panel.on{display:block}
+@media(max-width:980px){.layout{grid-template-columns:1fr}h1{font-size:26px}}
+@media print{.chrome,header,aside,.no-print{display:none!important}}
+</style>
 </head>
 <body>
-<p><a href="https://coordinated-loop-atilas-projects-4582b658.vercel.app">Open The Coordinated Loop</a></p>
+<div class="wrap">
+<header>
+<p class="kicker">Self-contained figure plate</p>
+<h1>The Coordinated Loop</h1>
+<p class="lede">LLM · ACT-R · Human · Environment</p>
+</header>
+<div class="chrome no-print">
+<nav role="tablist">
+<button class="tab" data-id="architecture" aria-selected="true"><small>Figure 1</small>Architecture</button>
+<button class="tab" data-id="triad" aria-selected="false"><small>Figure 2</small>Semiotic triad</button>
+<button class="tab" data-id="bridge" aria-selected="false"><small>Figure 3</small>The bridge</button>
+</nav>
+<div class="row">
+<button class="btn solid" id="save-svg">Save SVG</button>
+<button class="btn" id="save-png">Save PNG</button>
+<button class="btn" id="copy-caption">Copy caption</button>
+<button class="btn" id="copy-link">Copy link</button>
+<button class="btn" id="print-plate">Print plate</button>
+</div>
+<p class="status" id="status">Loading figures…</p>
+</div>
+<div class="layout">
+<section>
+<div class="plate">
+<div class="panel on" data-panel="architecture"></div>
+<div class="panel" data-panel="triad"></div>
+<div class="panel" data-panel="bridge"></div>
+</div>
+<p class="caption" id="caption"></p>
+</section>
+<aside>
+<p class="kicker">Source formulation</p>
+<dl>
+<dt>LLM</dt><dd>neural sign interpreter and generator. transforms and generates signs.</dd>
+<dt>ACT-R</dt><dd>symbolic–subsymbolic cognitive organizer. organizes signs into goals, memories, habits, and actions.</dd>
+<dt>Human</dt><dd>embodied, affective, normative, socially situated intelligence.</dd>
+<dt>Environment</dt><dd>supplies objects, resistance, feedback, and consequences.</dd>
+</dl>
+</aside>
+</div>
+</div>
+<script>
+const BASE="https://raw.githubusercontent.com/atilabayat/coordinated-loop/main/";
+const FILES={architecture:"fig-architecture.svg",triad:"fig-triad.svg",bridge:"fig-bridge.svg"};
+const FIGURES={
+architecture:{kicker:"Figure 1",title:"A Peircean Architecture of Coordinated Human–AI Intelligence",caption:"The LLM functions as a neural sign interpreter and generator, providing neural flexibility. ACT-R functions as a symbolic–subsymbolic cognitive organizer, providing symbolic cognitive architecture. The human supplies embodied interpretation, values, purposes, and accountability. The environment supplies objects, resistance, feedback, and consequences. Intelligence emerges through the ongoing transformation of signs into interpretants, habits, and adaptive action.",file:"figure-1-architecture.svg"},
+triad:{kicker:"Figure 2",title:"Sign, Object, Interpretant — with Habit Closing the Loop",caption:"In Peircean terms the environment is the object. The LLM is the sign. ACT-R is the immediate interpretant. The human is the final interpretant. Habit is adaptive action returning upon the object.",file:"figure-2-semiotic-triad.svg"},
+bridge:{kicker:"Figure 3",title:"The Essential Bridge",caption:"The LLM provides neural flexibility; ACT-R provides symbolic cognitive architecture; interaction with the world and the human supplies grounding, purpose, and correction.",file:"figure-3-essential-bridge.svg"}
+};
+const alias={1:"architecture","figure-1":"architecture",2:"triad","figure-2":"triad",3:"bridge","figure-3":"bridge",architecture:"architecture",triad:"triad",bridge:"bridge"};
+let id=alias[location.hash.replace(/^#/,"")]||"architecture";
+const statusEl=document.getElementById("status");
+const captionEl=document.getElementById("caption");
+function show(next){if(!FIGURES[next])next="architecture";id=next;
+document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.dataset.panel===id));
+document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.id===id)));
+const f=FIGURES[id];
+captionEl.innerHTML="<strong>"+f.kicker+".</strong> <em>"+f.title+".</em> "+f.caption;
+history.replaceState(null,"","#"+id);document.title=f.kicker+" · The Coordinated Loop";
+statusEl.textContent=f.kicker+" ready. Copy the link to share this figure.";}
+function currentSvg(){return document.querySelector(".panel.on svg");}
+function download(url,name){const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();}
+async function svgXml(svg){const c=svg.cloneNode(true);c.setAttribute("xmlns","http://www.w3.org/2000/svg");const vb=svg.viewBox.baseVal;if(vb&&vb.width){c.setAttribute("width",String(vb.width));c.setAttribute("height",String(vb.height));}return '<?xml version="1.0" encoding="UTF-8"?>\n'+c.outerHTML;}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.id));
+document.getElementById("save-svg").onclick=async()=>{const svg=currentSvg();if(!svg)return;const url=URL.createObjectURL(new Blob([await svgXml(svg)],{type:"image/svg+xml"}));download(url,FIGURES[id].file);statusEl.textContent=FIGURES[id].file+" ready.";};
+document.getElementById("save-png").onclick=async()=>{const svg=currentSvg();if(!svg)return;const vb=svg.viewBox.baseVal,w=vb.width||1400,h=vb.height||1020;const img=new Image();const xml=await svgXml(svg);const u=URL.createObjectURL(new Blob([xml],{type:"image/svg+xml"}));await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=u;});const canvas=document.createElement("canvas");canvas.width=w*2;canvas.height=h*2;const ctx=canvas.getContext("2d");ctx.fillStyle="#f3eee4";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);const blob=await new Promise(r=>canvas.toBlob(r,"image/png"));download(URL.createObjectURL(blob),FIGURES[id].file.replace(".svg",".png"));URL.revokeObjectURL(u);};
+document.getElementById("copy-caption").onclick=async()=>{const f=FIGURES[id];try{await navigator.clipboard.writeText(f.kicker+". "+f.title+". "+f.caption);statusEl.textContent="Caption copied.";}catch(e){statusEl.textContent="Select the caption and copy it.";}};
+document.getElementById("copy-link").onclick=async()=>{const url=location.href.split("#")[0]+"#"+id;try{await navigator.clipboard.writeText(url);statusEl.textContent="Link copied — share that URL.";}catch(e){statusEl.textContent=url;}};
+document.getElementById("print-plate").onclick=()=>window.print();
+window.addEventListener("keydown",e=>{if(e.key==="1")show("architecture");if(e.key==="2")show("triad");if(e.key==="3")show("bridge");});
+window.addEventListener("hashchange",()=>show(alias[location.hash.replace(/^#/,"")]||id));
+Promise.all(Object.entries(FILES).map(async([key,file])=>{
+  const res=await fetch(BASE+file+"?t="+Date.now());
+  const svg=await res.text();
+  document.querySelector('[data-panel="'+key+'"]').innerHTML=svg;
+})).then(()=>show(id)).catch(()=>{statusEl.textContent="Could not load a figure file.";});
+</script>
 </body>
 </html>
